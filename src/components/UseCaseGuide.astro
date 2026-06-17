@@ -1,0 +1,123 @@
+---
+import { getUseCaseRecommendations, type ModelFamily } from '../data/models';
+import type { Locale } from '../scripts/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const recommendations = getUseCaseRecommendations();
+
+const t = (key: string) => {
+  const translations: Record<string, Record<Locale, string>> = {
+    useCasesTitle: { pt: 'Melhor Modelo por Caso de Uso', en: 'Best Model by Use Case' },
+    useCasesSubtitle: { pt: 'Recomendações baseadas nos benchmarks mais recentes e feedback da comunidade.', en: 'Recommendations based on latest benchmarks and community feedback.' },
+    bestForCoding: { pt: 'Melhor para Coding', en: 'Best for Coding' },
+    bestForReasoning: { pt: 'Melhor para Reasoning', en: 'Best for Reasoning' },
+    bestForMath: { pt: 'Melhor para Matemática', en: 'Best for Math' },
+    bestForAgentic: { pt: 'Melhor para Agentes/Tool Use', en: 'Best for Agentic/Tool Use' },
+    bestForLongContext: { pt: 'Melhor para Contexto Longo', en: 'Best for Long Context' },
+    bestForSelfHosting: { pt: 'Melhor para Self-Hosting', en: 'Best for Self-Hosting' },
+    bestForMultilingual: { pt: 'Melhor para Multilíngue', en: 'Best for Multilingual' },
+    bestOverall: { pt: 'Melhor Geral (Open Weight)', en: 'Best Overall (Open Weight)' },
+    reason: { pt: 'Por que', en: 'Why' },
+    benchmarks: { pt: 'Benchmarks', en: 'Benchmarks' },
+    visitChat: { pt: 'Testar no Chat', en: 'Try in Chat' },
+    visitHF: { pt: 'Ver no Hugging Face', en: 'View on Hugging Face' },
+    visitGH: { pt: 'Ver no GitHub', en: 'View on GitHub' },
+  };
+  return translations[key]?.[locale] || key;
+};
+
+const useCaseOrder = [
+  'coding',
+  'reasoning',
+  'math',
+  'agentic',
+  'longContext',
+  'selfHosting',
+  'multilingual',
+  'overall',
+] as const;
+
+const useCaseLabels: Record<string, string> = {
+  coding: 'bestForCoding',
+  reasoning: 'bestForReasoning',
+  math: 'bestForMath',
+  agentic: 'bestForAgentic',
+  longContext: 'bestForLongContext',
+  selfHosting: 'bestForSelfHosting',
+  multilingual: 'bestForMultilingual',
+  overall: 'bestOverall',
+};
+---
+
+<section id="use-cases" class="w-full flex justify-center items-center py-16">
+  <div class="w-full max-w-[1216px] px-6">
+    <header class="mb-12 text-center">
+      <h2 class="section-header">{t('useCasesTitle')}</h2>
+      <p class="mt-3 section-subheader max-w-2xl mx-auto">{t('useCasesSubtitle')}</p>
+    </header>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {useCaseOrder.map(key => {
+        const rec = recommendations[key];
+        const family = rec.family;
+        const model = rec.model;
+        const benchmarkScores = model.benchmarks;
+        
+        return (
+          <article class="card card-hover p-6 flex flex-col animate-slide-up">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" style="background: var(--brand-color, #0a0a0a);" aria-hidden="true">
+                <img src={`/logos/${family.toLowerCase().replace(/[().]/g, '').replace(/\s+/g, '').replace('z.ai', 'glm').replace('moonshot ai', 'kimi')}.svg`} alt="" width="20" height="20" class="invert" />
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-neutral-900 dark:text-neutral-50">{t(useCaseLabels[key])}</h3>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400">{family}</p>
+              </div>
+            </div>
+            
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4 flex-1">{rec.reason[locale]}</p>
+            
+            <div class="mb-4">
+              <span class="text-xs font-medium uppercase tracking-[0.1em] text-neutral-400 dark:text-neutral-500">{t('benchmarks')}</span>
+              <div class="flex flex-wrap gap-2 mt-2">
+                {Object.entries(benchmarkScores).map(([k, v]) => v !== undefined && (
+                  <span key={k} class="badge badge-blue text-[10px]">
+                    {k === 'benchlm' ? 'BenchLM' : k === 'artificialAnalysis' ? 'Artificial Analysis' : k === 'sweBench' ? 'SWE-Bench' : k === 'mathArena' ? 'MathArena' : k === 'mmmu' ? 'MMMU' : 'GPQA'}: {v}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+              <a href={`https://chat.${family.toLowerCase().includes('deepseek') ? 'deepseek' : family.toLowerCase().includes('qwen') ? 'qwen' : family.toLowerCase().includes('moonshot') ? 'moonshot' : family.toLowerCase().includes('z.ai') ? 'z' : family.toLowerCase().includes('minimax') ? 'hailuo' : family.toLowerCase().includes('baidu') ? 'yiyan' : family.toLowerCase().includes('01') ? '01' : family.toLowerCase().includes('stepfun') ? 'stepfun' : 'antgroup'}.com`} target="_blank" rel="noopener noreferrer" class="btn-primary text-xs group flex-1 justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                {t('visitChat')}
+              </a>
+              <a href={`https://huggingface.co/${family.toLowerCase().includes('deepseek') ? 'deepseek-ai' : family.toLowerCase().includes('qwen') ? 'Qwen' : family.toLowerCase().includes('moonshot') ? 'MoonshotAI' : family.toLowerCase().includes('z.ai') ? 'ZhipuAI' : family.toLowerCase().includes('minimax') ? 'MiniMax-AI' : family.toLowerCase().includes('baidu') ? 'baidu' : family.toLowerCase().includes('01') ? '01-ai' : family.toLowerCase().includes('stepfun') ? 'stepfun-ai' : 'AntGroup'}`} target="_blank" rel="noopener noreferrer" class="btn-primary text-xs group flex-1 justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                  <path d="M17 18a5 5 0 0 0-10 0"/>
+                  <path d="M12 2a10 10 0 0 0 0 20"/>
+                  <path d="M7 8a3 3 0 0 1 6 0"/>
+                </svg>
+                HF
+              </a>
+              <a href={`https://github.com/${family.toLowerCase().includes('deepseek') ? 'deepseek-ai' : family.toLowerCase().includes('qwen') ? 'QwenLM' : family.toLowerCase().includes('moonshot') ? 'MoonshotAI' : family.toLowerCase().includes('z.ai') ? 'ZhipuAI' : family.toLowerCase().includes('minimax') ? 'MiniMax-AI' : family.toLowerCase().includes('baidu') ? 'PaddlePaddle/Ernie' : family.toLowerCase().includes('01') ? '01-ai' : family.toLowerCase().includes('stepfun') ? 'stepfun-ai' : 'AntGroup'}`} target="_blank" rel="noopener noreferrer" class="btn-primary text-xs group flex-1 justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                  <path d="M9 18c-4.51 2-5-2-7-2"/>
+                </svg>
+                GH
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>

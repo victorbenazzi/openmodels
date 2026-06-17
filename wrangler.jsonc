@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schema.wrangler.io/v1",
+  "name": "openmodels",
+  "main": "worker.js",
+  "compatibility_date": "2025-06-17",
+  "pages_build_output_dir": "./dist",
+  "routes": [
+    {
+      "pattern": "openmodels.victorbenazzi.com/*",
+      "zone_name": "victorbenazzi.com"
+    }
+  ]
+}

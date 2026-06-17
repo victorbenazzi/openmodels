@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import ModelFamilyCard from '../components/ModelFamilyCard.astro';
+import BenchmarkTable from '../components/BenchmarkTable.tsx';
+import UseCaseGuide from '../components/UseCaseGuide.astro';
+import Footer from '../components/Footer.astro';
+import { modelFamilies } from '../data/models';
+
+const locale = (Astro.url.searchParams.get('lang') as 'pt' | 'en') || 'en';
+---
+
+<Layout title="OpenModels — Chinese Open-Source AI Models Catalog" lang={locale} description="Compare benchmarks, access official interfaces, and discover the right Chinese open-source AI model for your use case.">
+  <Header />
+  <main class="flex-1">
+    <Hero />
+    
+    <section id="models" class="w-full flex justify-center items-center py-16">
+      <div class="w-full max-w-[1216px] px-6">
+        <header class="mb-12">
+          <h2 class="section-header">Principais Labs / Top Labs</h2>
+          <p class="mt-3 section-subheader max-w-2xl">8 laboratórios chineses liderando a fronteira de modelos open source. Clique para expandir detalhes.</p>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {modelFamilies.map(family => (
+            <ModelFamilyCard family={family} locale={locale} />
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <section id="benchmarks" class="w-full flex justify-center items-center py-16 bg-neutral-50/50 dark:bg-neutral-900/50">
+      <div class="w-full max-w-[1216px] px-6">
+        <header class="mb-8">
+          <h2 class="section-header">Comparativo de Benchmarks</h2>
+          <p class="mt-3 section-subheader max-w-2xl">Pontuações das principais avaliações públicas. Clique nos cabeçalhos para ordenar. Valores mais altos = melhor desempenho.</p>
+        </header>
+        <BenchmarkTable client:load locale={locale} />
+      </div>
+    </section>
+    
+    <UseCaseGuide locale={locale} />
+    
+    <Footer locale={locale} />
+  </main>
+</Layout>
+
+<script>
+  // Handle language switching without full reload for smoother UX
+  document.addEventListener('DOMContentLoaded', () => {
+    const langToggle = document.getElementById('lang-toggle');
+    if (langToggle) {
+      langToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const currentLang = document.documentElement.lang;
+        const newLang = currentLang === 'pt' ? 'en' : 'pt';
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', newLang);
+        window.location.href = url.toString();
+      });
+    }
+  });
+</script>

@@ -1,0 +1,122 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  lang?: string;
+}
+
+const {
+  title = 'OpenModels — Chinese Open-Source AI Models Catalog',
+  description = 'Compare benchmarks, access official interfaces, and discover the right Chinese open-source AI model for your use case.',
+  image = '/og.svg',
+  lang = 'en',
+} = Astro.props;
+
+const siteUrl = 'https://openmodels.victorbenazzi.com';
+const canonical = siteUrl + Astro.url.pathname;
+
+const personNode = {
+  "@type": "Person",
+  "@id": "https://www.victorbenazzi.com.br/#person",
+  name: "Victor Benazzi",
+  url: "https://www.victorbenazzi.com.br",
+};
+
+const websiteSchema = {
+  "@type": "WebSite",
+  "@id": `${siteUrl}#website`,
+  url: siteUrl,
+  name: "OpenModels",
+  description: description,
+  inLanguage: ["en", "pt-BR"],
+  publisher: { "@id": "https://www.victorbenazzi.com.br/#organization" },
+};
+
+const breadcrumbSchema = {
+  "@type": "BreadcrumbList",
+  "@id": `${canonical}#breadcrumb`,
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "OpenModels",
+      item: siteUrl,
+    },
+  ],
+};
+---
+
+<!DOCTYPE html>
+<html lang={lang} class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, siteUrl).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, siteUrl).href} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" hreflang="en" href={siteUrl} />
+    <link rel="alternate" hreflang="pt-BR" href={siteUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": [websiteSchema, personNode, breadcrumbSchema] })} />
+    <script is:inline>
+      // Theme initialization (runs before paint)
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = stored ? stored === 'dark' : prefersDark;
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.classList.toggle('light', !isDark);
+      })();
+      
+      // Language initialization
+      (function() {
+        const stored = localStorage.getItem('lang');
+        if (stored) {
+          document.documentElement.lang = stored;
+        }
+      })();
+    </script>
+  </head>
+  <body class="h-full flex flex-col bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-50 transition-colors duration-200">
+    <slot />
+    <script is:inline>
+      // Hydration for theme toggle
+      document.addEventListener('DOMContentLoaded', () => {
+        const themeBtn = document.getElementById('theme-toggle');
+        const langBtn = document.getElementById('lang-toggle');
+        
+        if (themeBtn) {
+          themeBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            document.documentElement.classList.toggle('dark', !isDark);
+            document.documentElement.classList.toggle('light', isDark);
+            localStorage.setItem('theme', newTheme);
+            themeBtn.setAttribute('aria-label', newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+          });
+        }
+        
+        if (langBtn) {
+          langBtn.addEventListener('click', () => {
+            const currentLang = document.documentElement.lang;
+            const newLang = currentLang === 'pt' ? 'en' : 'pt';
+            document.documentElement.lang = newLang;
+            localStorage.setItem('lang', newLang);
+            window.location.reload();
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+---
+import type { Locale } from '../scripts/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const t = (key: string) => {
+  const translations: Record<string, Record<Locale, string>> = {
+    footerDataSource: { pt: 'Dados de benchmarks: BenchLM, Artificial Analysis, SWE-Bench Verified, MathArena, MMMU, GPQA Diamond.', en: 'Benchmark sources: BenchLM, Artificial Analysis, SWE-Bench Verified, MathArena, MMMU, GPQA Diamond.' },
+    footerDisclaimer: { pt: 'Benchmarks evoluem rapidamente. Verifique fontes originais para decisões críticas.', en: 'Benchmarks evolve rapidly. Verify original sources for critical decisions.' },
+    footerUpdated: { pt: 'Atualizado em', en: 'Updated on' },
+    footerBuiltBy: { pt: 'Desenvolvido por Victor Benazzi', en: 'Built by Victor Benazzi' },
+    footerSourceCode: { pt: 'Código fonte', en: 'Source code' },
+  };
+  return translations[key]?.[locale] || key;
+};
+
+const currentDate = new Date().toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<footer class="w-full border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/50 py-12">
+  <div class="w-full max-w-[1216px] mx-auto px-6">
+    <div class="flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between">
+      <div class="flex flex-col gap-2">
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">{t('footerDataSource')}</p>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">{t('footerDisclaimer')}</p>
+      </div>
+      
+      <div class="flex flex-col lg:flex-row gap-4 items-center">
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          {t('footerUpdated')} {currentDate}
+        </p>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          {t('footerBuiltBy')}
+        </p>
+        <a href="https://github.com/victorbenazzi/openmodels" target="_blank" rel="noopener noreferrer" class="link-external group">
+          {t('footerSourceCode')}
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+            <path d="M2.5 9.5L9.5 2.5M9.5 2.5H6M9.5 2.5V6" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
