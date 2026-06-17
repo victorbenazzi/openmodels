@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@import url('/fonts/geist.css');
+
+/* Drive the `dark:` utility variant from the `.dark` class on <html>
+   (set by the pre-paint script + theme toggle), not the OS media query. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Geist", system-ui, -apple-system, sans-serif;
@@ -166,6 +169,7 @@
   .badge-blue { @apply bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400; }
   .badge-purple { @apply bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400; }
   .badge-orange { @apply bg-orange-50 dark:bg-orange-950/20 text-orange-700 dark:text-orange-400; }
+  .badge-amber { @apply bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-500; }
   .badge-gray { @apply bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400; }
   
   .divider {
@@ -229,6 +233,20 @@
   
   .strength-bar {
     @apply h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden;
+  }
+
+  /* Flash highlight when a card is targeted from the site search */
+  .search-flash {
+    animation: search-flash 1.9s cubic-bezier(0.22, 1, 0.36, 1);
+    border-color: var(--brand, #6E59F0) !important;
+  }
+  @keyframes search-flash {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand, #6E59F0) 55%, transparent); }
+    20% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand, #6E59F0) 35%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand, #6E59F0) 0%, transparent); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .search-flash { animation: none; }
   }
   
   .strength-fill {

@@ -5,18 +5,13 @@ interface ThemeToggleProps {
 }
 
 export default function ThemeToggle({ id }: ThemeToggleProps) {
+  // SSR-stable initial value ('light'); synced to the real theme on mount.
+  // The pre-paint script in Layout already applied the correct class, so this
+  // only reconciles the icon after hydration.
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (stored) {
-      setTheme(stored);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
-    }
+    setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
   }, []);
 
   const toggleTheme = () => {
@@ -27,24 +22,11 @@ export default function ThemeToggle({ id }: ThemeToggleProps) {
     document.documentElement.classList.toggle('light', newTheme === 'light');
   };
 
-  if (!mounted) {
-    return (
-      <button
-        id={id}
-        class="btn-primary gap-1 px-3"
-        aria-label="Loading theme..."
-        disabled
-      >
-        <span class="w-4 h-4 border-2 border-neutral-300 border-t-transparent rounded-full animate-spin" />
-      </button>
-    );
-  }
-
   return (
     <button
       id={id}
       onClick={toggleTheme}
-      class="btn-primary gap-1 px-3"
+      class="btn-primary gap-1 px-3 py-1.5"
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >

@@ -45,3 +45,5 @@ coverage/
 
 # Wrangler
 .wrangler/
+# Astro
+.astro/

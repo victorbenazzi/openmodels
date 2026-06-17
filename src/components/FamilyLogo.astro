@@ -1,0 +1,41 @@
+---
+import type { ModelFamily } from '../data/models';
+import { getMonogram } from '../data/models';
+
+interface Props {
+  family: ModelFamily;
+  size?: number; // box size in px
+  rounded?: string; // tailwind rounding class
+  class?: string; // extra classes on the chip
+}
+
+const { family, size = 28, rounded = 'rounded-xl', class: extra = '' } = Astro.props;
+const inner = Math.round(size * 0.62);
+const fontSize = Math.max(9, Math.round(size * (getMonogram(family).length > 2 ? 0.32 : 0.4)));
+const mono = getMonogram(family);
+---
+
+{family.logoId ? (
+  <span
+    class={`inline-flex items-center justify-center ${rounded} bg-white ring-1 ring-black/5 overflow-hidden ${extra}`}
+    style={`width:${size}px;height:${size}px;`}
+  >
+    <img
+      src={`/logos/${family.logoId}.svg`}
+      alt={`${family.name} logo`}
+      width={inner}
+      height={inner}
+      class="object-contain"
+      style={`width:${inner}px;height:${inner}px;`}
+      loading="lazy"
+    />
+  </span>
+) : (
+  <span
+    class={`inline-flex items-center justify-center ${rounded} ring-1 ring-black/5 ${extra}`}
+    style={`width:${size}px;height:${size}px;background:${family.brandColor};`}
+    aria-hidden="true"
+  >
+    <span class="font-semibold leading-none text-white" style={`font-size:${fontSize}px;`}>{mono}</span>
+  </span>
+)}

@@ -1,25 +1,28 @@
 ---
-import LanguageToggle from './LanguageToggle.tsx';
 import ThemeToggle from './ThemeToggle.tsx';
+import SiteSearch from './SiteSearch.tsx';
 ---
 
-<header class="flex justify-center items-center w-full h-14 border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm">
-  <div class="flex items-center justify-between w-full max-w-[1216px] px-6">
-    <a href="/" class="flex items-center gap-2 text-sm font-semibold text-neutral-950 dark:text-neutral-50 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors" aria-label="OpenModels Home">
-      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" class="text-neutral-900 dark:text-neutral-50">
-        <rect width="32" height="32" rx="6" fill="currentColor"/>
-        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700" font-size="16" fill="white">OM</text>
+<header class="flex justify-center items-center w-full h-16 py-2.5 border-b border-neutral-200 dark:border-neutral-800 sticky top-0 z-50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md">
+  <div class="flex items-center gap-3 sm:gap-4 w-full max-w-[1216px] px-6">
+    <a href="/" class="flex items-center gap-2.5 text-sm font-semibold text-neutral-950 dark:text-neutral-50 hover:opacity-80 transition-opacity shrink-0" aria-label="OpenModels Home">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="currentColor" class="text-neutral-900 dark:text-neutral-50"/>
+        <path d="M9 21V11l4 6 4-6v10M21 11v10" stroke="currentColor" class="text-white dark:text-neutral-950" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="hidden sm:block">OpenModels</span>
+      <span class="hidden sm:block tracking-tight">OpenModels</span>
     </a>
-    
-    <nav class="flex items-center gap-6" aria-label="Main navigation">
-      <a href="#models" class="link-external">Modelos</a>
-      <a href="#benchmarks" class="link-external">Benchmarks</a>
-      <a href="#use-cases" class="link-external">Casos de Uso</a>
-      <div class="flex items-center gap-2">
-        <LanguageToggle id="lang-toggle" />
-        <ThemeToggle id="theme-toggle" />
+
+    <div class="flex-1 flex justify-center min-w-0">
+      <SiteSearch client:load />
+    </div>
+
+    <nav class="flex items-center gap-1 sm:gap-2 shrink-0" aria-label="Main navigation">
+      <a href="#models" class="hidden md:inline-flex px-3 py-1.5 rounded-md text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-50 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors">Models</a>
+      <a href="#benchmarks" class="hidden md:inline-flex px-3 py-1.5 rounded-md text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-50 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors">Benchmarks</a>
+      <a href="#use-cases" class="hidden md:inline-flex px-3 py-1.5 rounded-md text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-50 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors">Use Cases</a>
+      <div class="flex items-center gap-2 md:ml-2 md:pl-2 md:border-l border-neutral-200 dark:border-neutral-800">
+        <ThemeToggle id="theme-toggle" client:load />
       </div>
     </nav>
   </div>
