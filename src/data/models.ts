@@ -31,7 +31,7 @@ export interface ModelFamily {
   id: string;
   name: string;
   creator: string;
-  logo: string; // SVG path or identifier
+  logoId: string; // filename without extension
   description: Record<Locale, string>;
   website: string;
   chatInterface: string;
@@ -48,7 +48,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'qwen',
     name: 'Qwen',
     creator: 'Alibaba Cloud',
-    logo: 'qwen',
+    logoId: 'qwen',
     description: {
       pt: 'Família mais abrangente de modelos open source da China. Cobrem todos os tamanhos (0.5B a 235B+) com variantes MoE, multimodais (VL), especializadas em código (Coder) e reasoning (QwQ). Leader em downloads no Hugging Face.',
       en: 'China\’s most comprehensive open-source model family. Covers all sizes (0.5B to 235B+) with MoE, multimodal (VL), coding-specialized (Coder), and reasoning (QwQ) variants. Leader in Hugging Face downloads.'
@@ -146,7 +146,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'deepseek',
     name: 'DeepSeek',
     creator: 'DeepSeek (深度求索)',
-    logo: 'deepseek',
+    logoId: 'deepseek',
     description: {
       pt: 'Laboratório focado em eficiência algorítmica e arquiteturas MoE nativas. Pioneiros em Sparse Attention e modelos de reasoning 100% transparentes (R1). Todos os modelos lançados no Hugging Face com código completo.',
       en: 'Lab focused on algorithmic efficiency and native MoE architectures. Pioneers in Sparse Attention and fully transparent reasoning models (R1). All models released on Hugging Face with complete code.'
@@ -245,7 +245,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'kimi',
     name: 'Kimi (Moonshot AI)',
     creator: 'Moonshot AI',
-    logo: 'kimi',
+    logoId: 'kimi',
     description: {
       pt: 'Especialista em janelas de contexto ultra-longas (128K-256K tokens) e workflows agenteados. Kimi K2.6 é o 2º modelo open weight mais forte globalmente. Primeiro modelo open a lidar com centenas de chamadas de ferramenta sequenciais.',
       en: 'Specialist in ultra-long context windows (128K-256K tokens) and agentic workflows. Kimi K2.6 is the 2nd strongest open-weight model globally. First open model to handle hundreds of sequential tool calls.'
@@ -320,7 +320,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'glm',
     name: 'GLM (Z.ai)',
     creator: 'Z.ai (formerly Zhipu AI)',
-    logo: 'glm',
+    logoId: 'glm',
     description: {
       pt: 'Spin-off da Universidade de Tsinghua, arquitetura MoE proprietária (não derivada de LLaMA). GLM-5.1 e GLM-5 Reasoning empatam no topo chinês. Forte adoção empresarial na China, milhões de downloads globais.',
       en: 'Tsinghua University spin-off with proprietary MoE architecture (not LLaMA-derived). GLM-5.1 and GLM-5 Reasoning tie at the top of Chinese leaderboard. Strong enterprise adoption in China, millions of global downloads.'
@@ -396,7 +396,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'minimax',
     name: 'MiniMax',
     creator: 'MiniMax',
-    logo: 'minimax',
+    logoId: 'minimax',
     description: {
       pt: 'Laboratório chinês em ascensão com modelos fortes em coding e multimodal. MiMo-V2-Flash no mid-tier, M2.7 competindo no topo. Arquitetura própria, foco em eficiência de inferência.',
       en: 'Rising Chinese lab with strong coding and multimodal models. MiMo-V2-Flash in mid-tier, M2.7 competing at the top. Custom architecture, focus on inference efficiency.'
@@ -446,7 +446,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'ernie',
     name: 'Ernie (Baidu)',
     creator: 'Baidu',
-    logo: 'ernie',
+    logoId: 'ernie',
     description: {
       pt: 'Primeiro grande LLM chinês a fazer pivô de proprietário para open source (mid-2025). Ernie Bot gratuito desde abril 2025. Ernie 5 multimodal planejado para H2 2025. Forte em chinês nativo e busca.',
       en: 'First major Chinese LLM to pivot from proprietary to open source (mid-2025). Ernie Bot free since April 2025. Ernie 5 multimodal planned for H2 2025. Strong in native Chinese and search integration.'
@@ -495,7 +495,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'yi',
     name: 'Yi (01.AI)',
     creator: '01.AI',
-    logo: 'yi',
+    logoId: 'yi',
     description: {
       pt: 'Fundado por Kai-Fu Lee. Série Yi (6B, 9B, 34B, 200K context) foi pioneira em contextos longos open source. Yi-Large (closed) e Yi-Coder destacam-se. Movimento recente para modelos menores e eficientes.',
       en: 'Founded by Kai-Fu Lee. Yi series (6B, 9B, 34B, 200K context) pioneered long-context open source. Yi-Large (closed) and Yi-Coder stand out. Recent shift to smaller, efficient models.'
@@ -557,7 +557,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'stepfun',
     name: 'StepFun',
     creator: 'StepFun (阶跃星辰)',
-    logo: 'stepfun',
+    logoId: 'stepfun',
     description: {
       pt: 'Novo laboratório chinês com foco em modelos multimodais e reasoning. Step-2 (MoE) e Step-1V (vision) mostram resultados competitivos. Abordagem aberta desde o início.',
       en: 'New Chinese lab focused on multimodal and reasoning models. Step-2 (MoE) and Step-1V (vision) show competitive results. Open approach from the start.'
@@ -606,7 +606,7 @@ export const modelFamilies: ModelFamily[] = [
     id: 'ant',
     name: 'Ling (Ant Group)',
     creator: 'Ant Group',
-    logo: 'ant',
+    logoId: 'ant',
     description: {
       pt: 'Ant Group (Alipay) entra no jogo open source com Ling - modelos otimizados para aplicações financeiras e enterprise. Foco em compliance, segurança e inferência eficiente.',
       en: 'Ant Group (Alipay) enters open source with Ling - models optimized for financial and enterprise applications. Focus on compliance, security, and efficient inference.'
@@ -781,6 +781,9 @@ export function getScoreClass(score: number | undefined): string {
 }
 
 export function formatDate(dateStr: string, locale: Locale): string {
+  if (!dateStr || dateStr === 'TBA' || dateStr.includes('H2') || dateStr.includes('H1')) {
+    return dateStr;
+  }
   const [year, month] = dateStr.split('-');
   const date = new Date(parseInt(year), parseInt(month) - 1);
   return date.toLocaleDateString(locale === 'pt' ? 'pt-BR' : 'en-US', { year: 'numeric', month: 'short' });

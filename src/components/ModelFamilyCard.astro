@@ -8,28 +8,34 @@ interface Props {
 }
 
 const { family, locale } = Astro.props;
-const t = (key: string) => {
-  const translations: Record<string, Record<Locale, string>> = {
-    officialWebsite: { pt: 'Site Oficial', en: 'Official Website' },
-    chatInterface: { pt: 'Chat', en: 'Chat' },
-    huggingFace: { pt: 'Hugging Face', en: 'Hugging Face' },
-    githubRepo: { pt: 'GitHub', en: 'GitHub' },
-    flagshipModel: { pt: 'Modelo Principal', en: 'Flagship Model' },
-    contextWindow: { pt: 'Janela de Contexto', en: 'Context Window' },
-    license: { pt: 'Licença', en: 'License' },
-    openWeight: { pt: 'Pesos Abertos', en: 'Open Weight' },
-    closedWeight: { pt: 'Pesos Fechados', en: 'Closed Weight' },
-    viewDetails: { pt: 'Ver detalhes', en: 'View details' },
-    hideDetails: { pt: 'Ocultar', en: 'Hide' },
-    strengthsTitle: { pt: 'Pontos Fortes', en: 'Strengths' },
-    updated: { pt: 'Atualizado', en: 'Updated' },
-  };
+const translations = {
+  officialWebsite: { pt: 'Site Oficial', en: 'Official Website' },
+  chatInterface: { pt: 'Chat', en: 'Chat' },
+  huggingFace: { pt: 'Hugging Face', en: 'Hugging Face' },
+  githubRepo: { pt: 'GitHub', en: 'GitHub' },
+  flagshipModel: { pt: 'Modelo Principal', en: 'Flagship Model' },
+  contextWindow: { pt: 'Janela de Contexto', en: 'Context Window' },
+  license: { pt: 'Licença', en: 'License' },
+  openWeight: { pt: 'Pesos Abertos', en: 'Open Weight' },
+  closedWeight: { pt: 'Pesos Fechados', en: 'Closed Weight' },
+  viewDetails: { pt: 'Ver detalhes', en: 'View details' },
+  hideDetails: { pt: 'Ocultar', en: 'Hide' },
+  strengthsTitle: { pt: 'Pontos Fortes', en: 'Strengths' },
+  updated: { pt: 'Atualizado', en: 'Updated' },
+} as const;
+
+const t = (key: keyof typeof translations) => {
   return translations[key]?.[locale] || key;
 };
 
-const flagship = family.models.reduce((prev, curr) => 
-  (curr.benchmarks.benchlm || 0) > (prev.benchmarks.benchlm || 0) ? curr : prev
-);
+// Prefer open-weight models for flagship, fallback to highest BenchLM
+const flagship = family.models.reduce((prev, curr) => {
+  // If only one is open weight, prefer it
+  if (curr.isOpenWeight && !prev.isOpenWeight) return curr;
+  if (!curr.isOpenWeight && prev.isOpenWeight) return prev;
+  // Otherwise prefer higher BenchLM
+  return (curr.benchmarks.benchlm || 0) > (prev.benchmarks.benchlm || 0) ? curr : prev;
+});
 ---
 
 <article id={family.id} class="card card-hover overflow-hidden animate-slide-up">
@@ -126,7 +132,7 @@ const flagship = family.models.reduce((prev, curr) =>
         <h4 class="text-xs font-medium uppercase tracking-[0.15em] text-neutral-950 dark:text-neutral-50 mb-3">{t('strengthsTitle')}</h4>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {family.strengths.map(strength => {
-            const strengthLabels: Record<string, Record<Locale, string>> = {
+            const strengthLabels = {
               coding: { pt: 'Coding', en: 'Coding' },
               reasoning: { pt: 'Reasoning', en: 'Reasoning' },
               math: { pt: 'Matemática', en: 'Math' },
@@ -136,7 +142,7 @@ const flagship = family.models.reduce((prev, curr) =>
               multimodal: { pt: 'Multimodal', en: 'Multimodal' },
               speed: { pt: 'Velocidade', en: 'Speed' },
               selfHosting: { pt: 'Self-Hosting', en: 'Self-Hosting' },
-            };
+            } as const;
             const label = strengthLabels[strength.category]?.[locale] || strength.category;
             const width = Math.round((strength.score / 10) * 100);
             return (
